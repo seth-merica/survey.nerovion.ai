@@ -1,779 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nerovion — B2B Validation Survey</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ink: #0f0f0f;
-    --mid: #4a4a4a;
-    --light: #8a8a8a;
-    --rule: #e0dcd6;
-    --bg: #faf9f7;
-    --accent: #1a1a2e;
-    --accent-warm: #c8a96e;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nerovion — Practitioner Survey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --viola: #A72D91; --viola-light: #C44DB0; --viola-dark: #7A1F6A;
+      --orange: #ED7D1B; --orange-light: #F59A45;
+      --accent: #ED7D1B; --accent-light: #F59A45; /* B2B uses orange as primary */
+      --deep: #130D22; --deep-mid: #1E1430; --deep-surface: #261A3A; --deep-border: #3A2858;
+      --text-primary: #F0EAF8; --text-secondary: #B8A8D0; --text-muted: #7A6A94;
+      --white: #FFFFFF;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+    html, body { height: 100%; }
+    body { background: var(--deep); color: var(--text-primary); font-family: var(--font-body); font-weight: 300; overflow: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.3; mix-blend-mode: overlay;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    .progress-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--deep-border); z-index: 100; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--viola)); transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1); width: 0%; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.6;
-  }
+    .top-nav { position: fixed; top: 3px; left: 0; right: 0; padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; z-index: 90; background: rgba(19,13,34,0.7); backdrop-filter: blur(12px); }
+    .nav-logo { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; letter-spacing: 0.04em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--viola-light); }
+    .nav-step { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
 
-  /* HEADER */
-  .header {
-    background: var(--accent);
-    padding: 64px 48px 56px;
-    position: relative;
-    overflow: hidden;
-  }
-  .header::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 280px; height: 280px;
-    border-radius: 50%;
-    border: 1px solid rgba(200,169,110,0.15);
-  }
-  .header::after {
-    content: '';
-    position: absolute;
-    bottom: -80px; left: 40px;
-    width: 180px; height: 180px;
-    border-radius: 50%;
-    border: 1px solid rgba(200,169,110,0.08);
-  }
-  /* WORDMARK */
-  .wordmark {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 36px;
-  }
-  .wordmark-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 300;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #ffffff;
-  }
-  .wordmark-tld {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent-warm);
-    padding: 2px 6px;
-    border: 1px solid rgba(200,169,110,0.4);
-  }
-  .wordmark-rule {
-    width: 32px;
-    height: 1px;
-    background: rgba(200,169,110,0.3);
-    margin-bottom: 28px;
-  }
+    .screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 48px 48px; opacity: 0; pointer-events: none; transform: translateY(40px); transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+    .screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .screen.exit-up { opacity: 0; transform: translateY(-40px); transition: opacity 0.35s ease, transform 0.35s ease; }
+    .screen-inner { width: 100%; max-width: 720px; }
 
-  .header-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent-warm);
-    margin-bottom: 20px;
-  }
-  .header h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(32px, 5vw, 52px);
-    color: #ffffff;
-    line-height: 1.1;
-    font-weight: 400;
-    max-width: 600px;
-  }
-  .header h1 em {
-    font-style: italic;
-    color: var(--accent-warm);
-  }
-  .header-meta {
-    margin-top: 28px;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  .header-meta span {
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    font-weight: 300;
-  }
-  .header-meta .dot {
-    width: 3px; height: 3px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-  }
+    .q-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--orange); display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+    .q-label::before { content: ''; display: block; width: 28px; height: 1px; background: var(--orange); }
+    .q-text { font-family: var(--font-display); font-size: clamp(1.6rem, 3.5vw, 2.8rem); font-weight: 300; line-height: 1.25; color: var(--white); margin-bottom: 12px; }
+    .q-text em { font-style: italic; color: var(--orange-light); }
+    .q-sub { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 48px; max-width: 600px; }
 
-  /* WRAPPER */
-  .wrapper {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 0 32px 80px;
-  }
+    .slider-wrap { width: 100%; margin-bottom: 40px; }
+    .slider-labels { display: flex; justify-content: space-between; margin-bottom: 16px; }
+    .slider-labels span { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; color: var(--text-muted); max-width: 18%; text-align: center; line-height: 1.4; }
+    .slider-labels span:first-child { text-align: left; }
+    .slider-labels span:last-child { text-align: right; }
+    .slider-track-wrap { position: relative; padding: 16px 0; }
+    input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--deep-border); outline: none; cursor: pointer; border-radius: 2px; }
+    input[type="range"]::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: linear-gradient(to right, var(--orange) 0%, var(--orange) var(--pct, 0%), var(--deep-border) var(--pct, 0%)); }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px rgba(237,125,27,0.2); cursor: pointer; margin-top: -13px; transition: box-shadow 0.2s, transform 0.15s; }
+    input[type="range"]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 8px rgba(237,125,27,0.25); transform: scale(1.1); }
+    input[type="range"]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--orange); border: none; cursor: pointer; }
+    .slider-value-display { text-align: center; margin-top: 20px; }
+    .slider-current-label { font-family: var(--font-display); font-size: 1.1rem; font-style: italic; color: var(--text-primary); min-height: 1.6rem; transition: opacity 0.2s; }
 
-  /* INTRO BLOCK */
-  .intro-block {
-    background: #fff;
-    border: 1px solid var(--rule);
-    border-top: none;
-    padding: 40px 48px;
-    position: relative;
-  }
-  .intro-block::before {
-    content: '';
-    position: absolute;
-    left: 48px; top: 0;
-    width: 40px; height: 2px;
-    background: var(--accent-warm);
-  }
-  .intro-block p {
-    font-size: 15px;
-    color: var(--mid);
-    line-height: 1.75;
-    max-width: 580px;
-  }
-  .intro-block .sign {
-    margin-top: 24px;
-    font-size: 14px;
-    color: var(--light);
-  }
-  .intro-block .sign strong {
-    color: var(--ink);
-    font-weight: 600;
-  }
+    .choices { display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; }
+    .choice-btn { background: var(--deep-surface); border: 1px solid var(--deep-border); padding: 14px 20px; color: var(--text-secondary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; text-align: left; cursor: pointer; transition: border-color 0.2s, background 0.2s, color 0.2s; display: flex; align-items: center; gap: 14px; }
+    .choice-btn:hover { border-color: var(--orange); background: rgba(38,26,58,0.8); color: var(--text-primary); }
+    .choice-btn.selected { border-color: var(--orange); background: rgba(237,125,27,0.08); color: var(--text-primary); }
+    .choice-check { width: 18px; height: 18px; border: 1.5px solid var(--deep-border); border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .choice-btn.selected .choice-check { background: var(--orange); border-color: var(--orange); }
+    .choice-btn.selected .choice-check::after { content: '✓'; color: var(--white); font-size: 11px; font-weight: 700; }
 
-  /* RESPONDENT BLOCK */
-  .respondent-block {
-    background: var(--accent);
-    padding: 28px 40px;
-    margin-top: 24px;
-    border: 1px solid rgba(200,169,110,0.2);
-  }
-  .respondent-block .r-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent-warm);
-    margin-bottom: 18px;
-  }
-  .respondent-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  .r-field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 8px;
-  }
-  .r-field input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1.5px solid rgba(255,255,255,0.2);
-    padding: 8px 0;
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    color: #fff;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .r-field input::placeholder { color: rgba(255,255,255,0.2); }
-  .r-field input:focus { border-color: var(--accent-warm); }
+    .field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
+    .field-group label { display: block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .field-group input { width: 100%; background: var(--deep-surface); border: 1px solid var(--deep-border); color: var(--text-primary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; padding: 14px 18px; outline: none; transition: border-color 0.2s; }
+    .field-group input:focus { border-color: var(--orange); }
+    .field-group input::placeholder { color: var(--text-muted); }
 
-  /* SECTION DIVIDER */
-  .section-divider {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin: 40px 0 0;
-  }
-  .section-divider span {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--light);
-    white-space: nowrap;
-  }
-  .section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--rule);
-  }
+    .open-textarea { width: 100%; background: var(--deep-surface); border: 1px solid var(--deep-border); color: var(--text-primary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; padding: 16px 18px; outline: none; transition: border-color 0.2s; resize: none; min-height: 140px; margin-bottom: 40px; }
+    .open-textarea:focus { border-color: var(--orange); }
+    .open-textarea::placeholder { color: var(--text-muted); }
 
-  /* QUESTION CARD */
-  .q-card {
-    background: #fff;
-    border: 1px solid var(--rule);
-    margin-top: 16px;
-    padding: 36px 40px;
-    position: relative;
-    transition: border-color 0.2s;
-  }
-  .q-card:hover { border-color: #c8c2b8; }
+    .conditional-field { display: none; margin-top: -16px; margin-bottom: 40px; }
+    .conditional-field.visible { display: block; }
+    .conditional-field input { width: 100%; background: var(--deep-surface); border: 1px solid var(--deep-border); color: var(--text-primary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; padding: 14px 18px; outline: none; transition: border-color 0.2s; }
+    .conditional-field input:focus { border-color: var(--orange); }
+    .conditional-field input::placeholder { color: var(--text-muted); }
+    .conditional-label { display: block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
 
-  .q-number {
-    position: absolute;
-    top: 36px; right: 40px;
-    font-family: 'DM Serif Display', serif;
-    font-size: 48px;
-    color: var(--rule);
-    line-height: 1;
-    user-select: none;
-  }
-  .q-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent-warm);
-    margin-bottom: 10px;
-  }
-  .q-text {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--ink);
-    line-height: 1.5;
-    max-width: 520px;
-    margin-bottom: 20px;
-  }
+    .btn-next { background: var(--orange); color: var(--white); font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 48px; border: none; cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; gap: 12px; }
+    .btn-next:hover { background: var(--orange-light); transform: translateY(-2px); }
+    .btn-back { background: transparent; color: var(--text-muted); font-family: var(--font-body); font-size: 0.78rem; font-weight: 400; letter-spacing: 0.08em; border: none; cursor: pointer; padding: 10px 0; transition: color 0.2s; margin-right: 24px; }
+    .btn-back:hover { color: var(--text-primary); }
+    .btn-row { display: flex; align-items: center; margin-top: 8px; }
+    .arrow { font-size: 18px; transition: transform 0.2s; }
+    .btn-next:hover .arrow { transform: translateX(4px); }
 
-  /* CUSTOM CHECKBOXES */
-  .options { display: flex; flex-direction: column; gap: 10px; }
+    .intro-screen .q-text { font-size: clamp(2rem, 4vw, 3.6rem); margin-bottom: 20px; }
+    .intro-meta { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .intro-meta-item { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+    .intro-meta-item::before { content: ''; display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--orange); }
+    .intro-body { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.85; margin-bottom: 20px; max-width: 640px; }
+    .intro-sig { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 48px; }
+    .intro-sig strong { color: var(--orange); font-weight: 500; letter-spacing: 0.04em; }
+    .how-callout { background: var(--deep-surface); border: 1px solid var(--deep-border); border-left: 3px solid var(--orange); padding: 20px 24px; margin-bottom: 40px; }
+    .how-callout-label { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange-light); margin-bottom: 10px; }
+    .how-callout p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 8px; }
+    .how-callout p:last-child { margin-bottom: 0; }
+    .how-example { font-family: var(--font-display); font-style: italic; font-size: 0.95rem; color: var(--text-primary); border-left: 1px solid var(--deep-border); padding-left: 12px; margin: 6px 0; }
 
-  .opt {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 14px;
-    border: 1px solid var(--rule);
-    cursor: pointer;
-    transition: all 0.15s;
-    background: var(--bg);
-    position: relative;
-  }
-  .opt:hover { background: #f0ede8; border-color: #c8c2b8; }
+    .success-screen { text-align: center; }
+    .success-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(237,125,27,0.1); border: 1px solid var(--orange); display: flex; align-items: center; justify-content: center; margin: 0 auto 32px; font-size: 28px; color: var(--orange-light); }
+    .success-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; color: var(--white); margin-bottom: 20px; line-height: 1.2; }
+    .success-title em { font-style: italic; color: var(--orange-light); }
+    .success-body { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.85; max-width: 560px; margin: 0 auto 40px; }
+    .back-home { font-size: 0.8rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.06em; }
+    .back-home:hover { color: var(--orange-light); }
+    .screen::after { content: ''; position: fixed; top: -150px; right: -150px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(237,125,27,0.08) 0%, transparent 70%); pointer-events: none; z-index: -1; }
 
-  .opt input[type="checkbox"],
-  .opt input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0; height: 0;
-  }
-
-  .opt-box {
-    width: 16px; height: 16px;
-    min-width: 16px;
-    border: 1.5px solid #c0bab2;
-    margin-top: 2px;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-
-  /* Radio style — circle */
-  .opt.radio .opt-box { border-radius: 50%; }
-
-  .opt input:checked ~ .opt-box {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-  .opt input:checked ~ .opt-box::after {
-    content: '';
-    display: block;
-    width: 6px; height: 6px;
-    background: #fff;
-    border-radius: 1px;
-  }
-  .opt.radio input:checked ~ .opt-box::after {
-    border-radius: 50%;
-  }
-
-  .opt input:checked ~ .opt-text { color: var(--ink); font-weight: 500; }
-  .opt-text { font-size: 14px; color: var(--mid); line-height: 1.5; }
-
-  /* FOLLOWUP */
-  .followup {
-    margin-top: 20px;
-    padding-top: 18px;
-    border-top: 1px dashed var(--rule);
-  }
-  .followup-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--light);
-    margin-bottom: 10px;
-  }
-  .followup-line {
-    width: 100%;
-    border: none;
-    border-bottom: 1.5px solid var(--rule);
-    background: transparent;
-    padding: 8px 0;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .followup-line:focus { border-color: var(--accent); }
-  .followup-line::placeholder { color: #c0bab2; }
-
-  .followup-area {
-    width: 100%;
-    border: 1px solid var(--rule);
-    background: var(--bg);
-    padding: 12px 14px;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--ink);
-    outline: none;
-    resize: vertical;
-    min-height: 80px;
-    transition: border-color 0.2s;
-    margin-top: 4px;
-  }
-  .followup-area:focus { border-color: var(--accent); }
-
-  /* EXAMPLE CALLOUT */
-  .example-callout {
-    margin: 0 0 20px;
-    padding: 14px 16px;
-    background: #f5f2ec;
-    border-left: 3px solid var(--accent-warm);
-    font-size: 13px;
-    color: var(--mid);
-    font-style: italic;
-    line-height: 1.65;
-  }
-
-  /* SUBMIT BUTTON */
-  .submit-area {
-    margin-top: 40px;
-    text-align: center;
-  }
-  .submit-btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    padding: 18px 56px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-  .submit-btn:hover { background: #2a2a4e; }
-  .submit-btn:active { transform: scale(0.98); }
-
-  .submit-note {
-    font-size: 12px;
-    color: var(--light);
-    margin-top: 14px;
-  }
-
-  /* SUCCESS STATE */
-  .success-screen {
-    display: none;
-    background: var(--accent);
-    padding: 80px 48px;
-    text-align: center;
-    margin-top: 24px;
-  }
-  .success-screen h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 36px;
-    color: #fff;
-    font-weight: 400;
-    margin-bottom: 16px;
-  }
-  .success-screen p {
-    font-size: 15px;
-    color: rgba(255,255,255,0.6);
-    max-width: 440px;
-    margin: 0 auto;
-    line-height: 1.7;
-  }
-  .success-accent {
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent-warm);
-    margin-bottom: 24px;
-    font-weight: 600;
-  }
-
-  /* FOOTER */
-  .footer-block {
-    background: var(--accent);
-    margin-top: 48px;
-    padding: 40px 48px;
-  }
-  .footer-block p {
-    font-size: 14px;
-    color: rgba(255,255,255,0.6);
-    line-height: 1.7;
-  }
-  .footer-block p strong { color: #fff; font-weight: 500; }
-  .footer-cta {
-    font-size: 13px;
-    color: var(--accent-warm);
-    margin-top: 14px;
-    font-weight: 500;
-  }
-
-  @media (max-width: 600px) {
-    .header { padding: 48px 24px 40px; }
-    .wrapper { padding: 0 16px 60px; }
-    .intro-block { padding: 32px 24px; }
-    .intro-block::before { left: 24px; }
-    .respondent-block { padding: 24px; }
-    .respondent-fields { grid-template-columns: 1fr; }
-    .q-card { padding: 28px 24px; }
-    .q-number { top: 24px; right: 24px; font-size: 36px; }
-    .footer-block { padding: 32px 24px; }
-    .success-screen { padding: 60px 24px; }
-  }
-</style>
+    @media (max-width: 640px) {
+      .top-nav { padding: 16px 24px; }
+      .screen { padding: 72px 24px 40px; }
+      .field-pair { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="wordmark">
-    <span class="wordmark-name">Nerovion</span>
-    <span class="wordmark-tld">.ai</span>
-  </div>
-  <div class="wordmark-rule"></div>
-  <div class="header-label">Market Research Survey</div>
-  <h1>Social Translator<br><em>B2B Validation</em></h1>
-  <div class="header-meta">
-    <span>Therapists &amp; Coaches</span>
-    <div class="dot"></div>
-    <span>Behavioral Specialists</span>
-    <div class="dot"></div>
-    <span>8–10 minutes</span>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="top-nav">
+  <a href="https://nerovion.ai" class="nav-logo">Nero<span>vion</span></a>
+  <span class="nav-step" id="navStep">Practitioner Survey</span>
+</nav>
+
+<!-- ── SCREEN 0: INTRO ── -->
+<div class="screen active" id="screen-0">
+  <div class="screen-inner intro-screen">
+    <div class="q-label">Practitioner Survey</div>
+    <div class="q-text">The tool your clients<br>need you to <em>know about.</em></div>
+    <div class="intro-meta">
+      <span class="intro-meta-item">Therapists &amp; Coaches</span>
+      <span class="intro-meta-item">Behavioral Specialists</span>
+      <span class="intro-meta-item">~2 minutes</span>
+    </div>
+    <p class="intro-body">I'm building an AI tool for neurodivergent professionals that catches the unspoken cues during conversations they might miss — body language, tone, contradictions between words and reality. I'm doing market research with therapists, coaches, and behavioral specialists to understand how it should work. Your perspective is invaluable.</p>
+    <p class="intro-sig">Thanks, <strong>Seth Stapleton — Founder, Nerovion</strong></p>
+    <div class="how-callout">
+      <div class="how-callout-label">What This Looks Like</div>
+      <p>During a client's video call, Nerovion flags what they might be missing so they can respond with more awareness — independently, outside your sessions.</p>
+      <div class="how-example">"They said 'sounds good' but their tone sounds hesitant. They might have concerns they haven't voiced yet."</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-next" onclick="goTo(1)">Start the Survey <span class="arrow">→</span></button>
+    </div>
   </div>
 </div>
 
-<div class="wrapper">
-
-  <!-- INTRO -->
-  <div class="intro-block">
-    <p>
-      I'm building an AI tool for neurodivergent professionals (autism, ADHD, social anxiety, etc.) that catches the unspoken cues during conversations that they might miss — body language, tone, what's <em>not</em> being said, contradictions between words and reality.
-    </p>
-    <p style="margin-top:16px;">
-      In business, this means catching when someone's actually frustrated (even if they say "no problem"), or when a prospect isn't really interested (even if they say "sounds good"), or when a colleague needs support (even if they claim they're fine).
-    </p>
-    <p style="margin-top:16px;">
-      I'm doing market research with therapists, coaches, and behavioral specialists to understand if this solves a real problem and how it should work. Your honest feedback is invaluable.
-    </p>
-    <div class="sign">
-      Thanks,<br>
-      <strong>Seth</strong>
+<!-- ── SCREEN 1: NAME + EMAIL ── -->
+<div class="screen" id="screen-1">
+  <div class="screen-inner">
+    <div class="q-label">Your Information</div>
+    <div class="q-text">Before we begin, who are we talking to?</div>
+    <p class="q-sub">Your answers go directly to Seth. No spam, no sharing.</p>
+    <div class="field-pair">
+      <div class="field-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name" />
+      </div>
+      <div class="field-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="your@email.com" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(0)">← Back</button>
+      <button class="btn-next" onclick="goTo(2)">Next <span class="arrow">→</span></button>
     </div>
   </div>
+</div>
 
-  <!-- FORM STARTS HERE -->
-  <form id="survey-form" action="https://formspree.io/f/mwvryjjk" method="POST">
-
-    <!-- RESPONDENT INFO -->
-    <div class="respondent-block">
-      <div class="r-label">Your Information</div>
-      <div class="respondent-fields">
-        <div class="r-field">
-          <label for="resp-name">Full Name</label>
-          <input type="text" id="resp-name" name="respondent_name" placeholder="Jane Smith" required>
-        </div>
-        <div class="r-field">
-          <label for="resp-email">Email Address</label>
-          <input type="email" id="resp-email" name="respondent_email" placeholder="jane@practice.com" required>
-        </div>
+<!-- ── SCREEN 2: Q1 — Client Challenge Frequency ── -->
+<div class="screen" id="screen-2">
+  <div class="screen-inner">
+    <div class="q-label">01 — Client Challenges</div>
+    <div class="q-text">How often do your neurodivergent clients miss unspoken cues in professional conversations?</div>
+    <p class="q-sub">Body language, tone shifts, contradictions between what someone says and how they actually seem.</p>
+    <div class="slider-wrap">
+      <div class="slider-labels">
+        <span>Rarely or never</span><span>Occasionally</span><span>Sometimes</span><span>Often</span><span>Major pain point</span>
+      </div>
+      <div class="slider-track-wrap">
+        <input type="range" min="1" max="5" value="3" id="q1-slider" oninput="updateSlider(this, q1Labels)" />
+      </div>
+      <div class="slider-value-display">
+        <div class="slider-current-label" id="q1-label">Occasionally, but not a primary issue</div>
       </div>
     </div>
-
-    <!-- QUESTIONS -->
-    <div class="section-divider"><span>Survey Questions</span></div>
-
-    <!-- Q1 -->
-    <div class="q-card">
-      <div class="q-number">01</div>
-      <div class="q-label">Client Challenges</div>
-      <div class="q-text">Do your neurodivergent clients or students miss unspoken cues during conversations — things like body language, tone shifts, what's NOT being said, or contradictions between what someone says and how they actually seem?</div>
-      <div class="example-callout">
-        Examples: Missing that a prospect isn't really interested even though they said "sounds good." Not realizing a colleague is frustrated when they say "no problem." Missing that someone needs support when they claim they're "fine."
-      </div>
-      <div class="options">
-        <label class="opt radio"><input type="radio" name="q1" value="Yes — major pain point for many clients"><div class="opt-box"></div><span class="opt-text">Yes — this is a major pain point for many of my clients</span></label>
-        <label class="opt radio"><input type="radio" name="q1" value="Yes — some clients struggle regularly"><div class="opt-box"></div><span class="opt-text">Yes — some of my clients struggle with this regularly</span></label>
-        <label class="opt radio"><input type="radio" name="q1" value="Occasionally, not a primary issue"><div class="opt-box"></div><span class="opt-text">Occasionally, but not a primary issue</span></label>
-        <label class="opt radio"><input type="radio" name="q1" value="Rarely"><div class="opt-box"></div><span class="opt-text">Rarely</span></label>
-        <label class="opt radio"><input type="radio" name="q1" value="Not sure / doesn't apply"><div class="opt-box"></div><span class="opt-text">Not sure / doesn't apply to my work</span></label>
-      </div>
-      <div class="followup">
-        <div class="followup-label">Follow-up: Describe a situation where this cost your client something</div>
-        <input class="followup-line" type="text" name="q1_followup" placeholder="Optional — a sale, a relationship, a misunderstanding...">
-      </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(1)">← Back</button>
+      <button class="btn-next" onclick="goTo(3)">Next <span class="arrow">→</span></button>
     </div>
-
-    <!-- Q2 -->
-    <div class="q-card">
-      <div class="q-number">02</div>
-      <div class="q-label">Real-World Consequences</div>
-      <div class="q-text">What's the biggest consequence when your clients miss these unspoken cues in professional or personal conversations?</div>
-      <div class="options">
-        <label class="opt radio"><input type="radio" name="q2" value="Misunderstood what the other person wanted or needed"><div class="opt-box"></div><span class="opt-text">Misunderstood what the other person actually wanted or needed</span></label>
-        <label class="opt radio"><input type="radio" name="q2" value="Missed a business opportunity"><div class="opt-box"></div><span class="opt-text">Missed a business opportunity (sale, partnership, connection)</span></label>
-        <label class="opt radio"><input type="radio" name="q2" value="Created conflict or hurt a relationship without realizing it"><div class="opt-box"></div><span class="opt-text">Created conflict or hurt a relationship without realizing it</span></label>
-        <label class="opt radio"><input type="radio" name="q2" value="Made wrong assumptions about emotional state"><div class="opt-box"></div><span class="opt-text">Made wrong assumptions about someone's emotional state</span></label>
-        <label class="opt radio"><input type="radio" name="q2" value="Didn't follow up when they should have"><div class="opt-box"></div><span class="opt-text">Didn't follow up when they should have (missed the signal to check in)</span></label>
-        <label class="opt radio"><input type="radio" name="q2" value="Something else"><div class="opt-box"></div><span class="opt-text">Something else</span></label>
-      </div>
-      <div class="followup">
-        <div class="followup-label">If "something else," describe:</div>
-        <input class="followup-line" type="text" name="q2_followup" placeholder="">
-      </div>
-    </div>
-
-    <!-- Q3 -->
-    <div class="q-card">
-      <div class="q-number">03</div>
-      <div class="q-label">Product Fit</div>
-      <div class="q-text">If a tool caught these unspoken cues in real-time during video calls and alerted your clients to what they might be missing — would you use it with your clients?</div>
-      <div class="example-callout">
-        Example: During a call, the AI flags — "They said 'sounds good' but their tone sounds hesitant and they're looking away. You might clarify: 'What specific concerns do you have?'"
-      </div>
-      <div class="options">
-        <label class="opt radio"><input type="radio" name="q3" value="Definitely yes"><div class="opt-box"></div><span class="opt-text">Definitely yes</span></label>
-        <label class="opt radio"><input type="radio" name="q3" value="Probably yes"><div class="opt-box"></div><span class="opt-text">Probably yes</span></label>
-        <label class="opt radio"><input type="radio" name="q3" value="Maybe"><div class="opt-box"></div><span class="opt-text">Maybe</span></label>
-        <label class="opt radio"><input type="radio" name="q3" value="Probably not"><div class="opt-box"></div><span class="opt-text">Probably not</span></label>
-        <label class="opt radio"><input type="radio" name="q3" value="Definitely not"><div class="opt-box"></div><span class="opt-text">Definitely not</span></label>
-      </div>
-      <div class="followup">
-        <div class="followup-label">What would make it more useful for your situation?</div>
-        <input class="followup-line" type="text" name="q3_followup" placeholder="">
-      </div>
-    </div>
-
-    <!-- Q4 -->
-    <div class="q-card">
-      <div class="q-number">04</div>
-      <div class="q-label">AI Coaching</div>
-      <div class="q-text">Would you feel comfortable having the AI suggest specific ways for your clients to respond or clarify based on the unspoken cues it detects?</div>
-      <div class="example-callout">
-        Example: The AI detects someone sounds frustrated but said "everything's fine." It suggests — "You might say: 'I want to make sure I understand — is there something I'm missing?' or 'I noticed you sound a bit stressed. What's going on?'"
-      </div>
-      <div class="options">
-        <label class="opt radio"><input type="radio" name="q4" value="Yes, I'd trust this kind of response coaching"><div class="opt-box"></div><span class="opt-text">Yes, I'd trust this kind of response coaching</span></label>
-        <label class="opt radio"><input type="radio" name="q4" value="Maybe, but only with my guidance and review first"><div class="opt-box"></div><span class="opt-text">Maybe, but only with my guidance and review first</span></label>
-        <label class="opt radio"><input type="radio" name="q4" value="Probably not — I prefer to coach the response myself"><div class="opt-box"></div><span class="opt-text">Probably not — I prefer to coach the response myself</span></label>
-        <label class="opt radio"><input type="radio" name="q4" value="No, that feels too prescriptive"><div class="opt-box"></div><span class="opt-text">No, that feels too prescriptive</span></label>
-        <label class="opt radio"><input type="radio" name="q4" value="Not sure"><div class="opt-box"></div><span class="opt-text">Not sure</span></label>
-      </div>
-      <div class="followup">
-        <div class="followup-label">What level of AI coaching would feel right for your clients?</div>
-        <input class="followup-line" type="text" name="q4_followup" placeholder="">
-      </div>
-    </div>
-
-    <!-- Q5 -->
-    <div class="q-card">
-      <div class="q-number">05</div>
-      <div class="q-label">Integration Model</div>
-      <div class="q-text">How would you prefer to integrate this into your practice?</div>
-      <div class="options">
-        <label class="opt radio"><input type="radio" name="q5" value="Clients use independently between sessions"><div class="opt-box"></div><span class="opt-text">Clients use independently — practice on their own between sessions</span></label>
-        <label class="opt radio"><input type="radio" name="q5" value="I use it during sessions with clients"><div class="opt-box"></div><span class="opt-text">I use it during sessions — real-time tool during our work together</span></label>
-        <label class="opt radio"><input type="radio" name="q5" value="Homework — clients use between sessions and report back"><div class="opt-box"></div><span class="opt-text">Homework — clients use between sessions and report back</span></label>
-        <label class="opt radio"><input type="radio" name="q5" value="Multiple ways depending on the client"><div class="opt-box"></div><span class="opt-text">Multiple ways depending on the client</span></label>
-        <label class="opt radio"><input type="radio" name="q5" value="Not sure yet"><div class="opt-box"></div><span class="opt-text">Not sure yet</span></label>
-      </div>
-    </div>
-
-    <!-- Q6 -->
-    <div class="q-card">
-      <div class="q-number">06</div>
-      <div class="q-label">Feature Priority</div>
-      <div class="q-text">What matters most for helping your clients catch these unspoken cues?</div>
-      <div class="options">
-        <label class="opt radio"><input type="radio" name="q6" value="Real-time alerts during the call"><div class="opt-box"></div><span class="opt-text">Real-time alerts during the call ("heads up: they sound hesitant even though they said yes")</span></label>
-        <label class="opt radio"><input type="radio" name="q6" value="In-moment coaching on how to respond"><div class="opt-box"></div><span class="opt-text">Coaching on how to respond in the moment ("you might clarify by asking...")</span></label>
-        <label class="opt radio"><input type="radio" name="q6" value="Post-call summary to review and learn from"><div class="opt-box"></div><span class="opt-text">Post-call summary to review and learn from</span></label>
-        <label class="opt radio"><input type="radio" name="q6" value="Progress tracking over time"><div class="opt-box"></div><span class="opt-text">Progress tracking over time (showing they're getting better at catching signals)</span></label>
-        <label class="opt radio"><input type="radio" name="q6" value="Simplicity and ease of use"><div class="opt-box"></div><span class="opt-text">Simplicity and ease of use — just works, no friction</span></label>
-        <label class="opt radio"><input type="radio" name="q6" value="Something else"><div class="opt-box"></div><span class="opt-text">Something else</span></label>
-      </div>
-      <div class="followup">
-        <div class="followup-label">If "something else," describe:</div>
-        <input class="followup-line" type="text" name="q6_followup" placeholder="">
-      </div>
-    </div>
-
-    <!-- Q7 -->
-    <div class="q-card">
-      <div class="q-number">07</div>
-      <div class="q-label">Privacy &amp; Ethics</div>
-      <div class="q-text">Any privacy or ethical concerns about using an AI tool that analyzes video and audio during your clients' conversations?</div>
-      <p style="font-size:12px; color:var(--light); margin-bottom:18px;">Note: All analysis happens locally on their device — no videos are stored or sent to servers. We're asking about comfort level with the concept.</p>
-      <div class="followup" style="border-top:none; padding-top:0; margin-top:0;">
-        <textarea class="followup-area" name="q7_privacy" placeholder="Data storage, face recognition, client comfort, transparency, consent — share any concerns freely..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q8 -->
-    <div class="q-card">
-      <div class="q-number">08</div>
-      <div class="q-label">Pricing Model</div>
-      <div class="q-text">Which pricing model would feel fairest and most accessible?</div>
-      <p style="font-size:12px; color:var(--light); margin-bottom:18px;">This is market research only — no commitment to any model yet.</p>
-      <div class="options">
-        <label class="opt radio"><input type="radio" name="q8" value="Per-client monthly subscription ($10–30/client/month)"><div class="opt-box"></div><span class="opt-text">Per-client monthly subscription ($10–30/client/month)</span></label>
-        <label class="opt radio"><input type="radio" name="q8" value="Flat monthly fee ($500–2,000/month unlimited client access)"><div class="opt-box"></div><span class="opt-text">Flat monthly fee for you ($500–2,000/month for unlimited client access)</span></label>
-        <label class="opt radio"><input type="radio" name="q8" value="Revenue share"><div class="opt-box"></div><span class="opt-text">Revenue share (you get a portion of what referred clients pay)</span></label>
-        <label class="opt radio"><input type="radio" name="q8" value="Tiered pricing (individual vs. group use)"><div class="opt-box"></div><span class="opt-text">Tiered pricing (individual vs. group use)</span></label>
-        <label class="opt radio"><input type="radio" name="q8" value="Not sure"><div class="opt-box"></div><span class="opt-text">Not sure</span></label>
-      </div>
-      <div class="followup">
-        <div class="followup-label">What price point actually makes sense for your situation?</div>
-        <input class="followup-line" type="text" name="q8_followup" placeholder="">
-      </div>
-    </div>
-
-    <!-- Q9 -->
-    <div class="q-card">
-      <div class="q-number">09</div>
-      <div class="q-label">Pilot Interest</div>
-      <div class="q-text">Would you be interested in being a pilot partner when we launch an MVP for neurodivergent professionals?</div>
-      <p style="font-size:12px; color:var(--light); margin-bottom:18px;">Pilots get early access, provide direct feedback, and help shape the product. We'd offer discounted rates in exchange for honest feedback and a few check-ins.</p>
-      <div class="options">
-        <label class="opt radio"><input type="radio" name="q9" value="Definitely interested"><div class="opt-box"></div><span class="opt-text">Definitely interested</span></label>
-        <label class="opt radio"><input type="radio" name="q9" value="Maybe — tell me more"><div class="opt-box"></div><span class="opt-text">Maybe — tell me more</span></label>
-        <label class="opt radio"><input type="radio" name="q9" value="Probably not"><div class="opt-box"></div><span class="opt-text">Probably not</span></label>
-        <label class="opt radio"><input type="radio" name="q9" value="Not sure yet"><div class="opt-box"></div><span class="opt-text">Not sure yet</span></label>
-      </div>
-      <div class="followup">
-        <div class="followup-label">If yes or maybe — best way to reach you:</div>
-        <input class="followup-line" type="text" name="q9_contact" placeholder="Email, phone, LinkedIn, etc." style="margin-bottom:16px;">
-        <div class="followup-label" style="margin-top:16px;">Best timing for a pilot:</div>
-        <input class="followup-line" type="text" name="q9_timing" placeholder="e.g., Q3 2025, after summer, flexible...">
-      </div>
-    </div>
-
-    <!-- Q10 -->
-    <div class="q-card">
-      <div class="q-number">10</div>
-      <div class="q-label">Open Feedback</div>
-      <div class="q-text">Any other thoughts, concerns, or suggestions?</div>
-      <div class="followup" style="border-top:none; padding-top:0; margin-top:0;">
-        <textarea class="followup-area" name="q10_open" placeholder="Nothing is off-limits — your candid perspective is the whole point." style="min-height:100px;"></textarea>
-      </div>
-    </div>
-
-    <!-- SUBMIT -->
-    <div class="submit-area">
-      <button type="submit" class="submit-btn">Submit My Responses</button>
-      <p class="submit-note">Your answers go directly and securely to Seth. No spam, no sharing.</p>
-    </div>
-
-  </form>
-
-  <!-- SUCCESS MESSAGE (shown after JS redirect) -->
-  <div class="success-screen" id="success-screen">
-    <div class="success-accent">Received</div>
-    <h2>Thank you.</h2>
-    <p>Your feedback goes directly toward shaping this product. If you said you're open to a pilot or want to stay posted, expect to hear from Seth directly.</p>
   </div>
+</div>
 
-  <!-- FOOTER -->
-  <div class="footer-block">
-    <p>That's it. <strong>Thanks for your time and honest feedback.</strong></p>
-    <p style="margin-top:10px;">Your insights on whether this solves a real problem for neurodivergent professionals will directly shape how we build this.</p>
-    <p style="margin-top:10px;">If you're interested in following along as we develop this, reply with <strong>"keep me posted"</strong> and I'll add you to our update list.</p>
-    <div class="footer-cta">Best, Seth</div>
+<!-- ── SCREEN 3: Q2 — Consequences ── -->
+<div class="screen" id="screen-3">
+  <div class="screen-inner">
+    <div class="q-label">02 — Real-World Consequences</div>
+    <div class="q-text">How significant are the consequences when your clients miss these cues?</div>
+    <p class="q-sub">Think about missed opportunities, damaged relationships, or professional setbacks.</p>
+    <div class="slider-wrap">
+      <div class="slider-labels">
+        <span>Minimal consequences</span><span>Minor</span><span>Moderate</span><span>Significant</span><span>Career-defining</span>
+      </div>
+      <div class="slider-track-wrap">
+        <input type="range" min="1" max="5" value="3" id="q2-slider" oninput="updateSlider(this, q2Labels)" />
+      </div>
+      <div class="slider-value-display">
+        <div class="slider-current-label" id="q2-label">Moderate — noticeable setbacks but they recover</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(2)">← Back</button>
+      <button class="btn-next" onclick="goTo(4)">Next <span class="arrow">→</span></button>
+    </div>
   </div>
+</div>
 
+<!-- ── SCREEN 4: Q3 — Product Fit ── -->
+<div class="screen" id="screen-4">
+  <div class="screen-inner">
+    <div class="q-label">03 — Product Fit</div>
+    <div class="q-text">How likely are you to recommend a real-time cueing tool to your clients?</div>
+    <p class="q-sub">A tool that catches unspoken cues during video calls and alerts your clients privately — used independently, outside sessions.</p>
+    <div class="slider-wrap">
+      <div class="slider-labels">
+        <span>Definitely not</span><span>Probably not</span><span>Maybe</span><span>Probably yes</span><span>Definitely yes</span>
+      </div>
+      <div class="slider-track-wrap">
+        <input type="range" min="1" max="5" value="3" id="q3-slider" oninput="updateSlider(this, q3Labels)" />
+      </div>
+      <div class="slider-value-display">
+        <div class="slider-current-label" id="q3-label">Maybe — depends on the specifics</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(3)">← Back</button>
+      <button class="btn-next" onclick="goTo(5)">Next <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 5: Q4 — AI Coaching Comfort ── -->
+<div class="screen" id="screen-5">
+  <div class="screen-inner">
+    <div class="q-label">04 — AI Coaching</div>
+    <div class="q-text">How comfortable are you with AI suggesting responses to your clients in the moment?</div>
+    <p class="q-sub">Example: The AI detects frustration and suggests — "You might say: 'I want to make sure I understand — is there something I'm missing?'"</p>
+    <div class="slider-wrap">
+      <div class="slider-labels">
+        <span>Not comfortable — too prescriptive</span><span>Hesitant</span><span>Neutral</span><span>Comfortable with guidance</span><span>Fully comfortable</span>
+      </div>
+      <div class="slider-track-wrap">
+        <input type="range" min="1" max="5" value="3" id="q4-slider" oninput="updateSlider(this, q4Labels)" />
+      </div>
+      <div class="slider-value-display">
+        <div class="slider-current-label" id="q4-label">Neutral — would need to see it in practice</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(4)">← Back</button>
+      <button class="btn-next" onclick="goTo(6)">Next <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 6: Q5 — Integration Model (multi-select) ── -->
+<div class="screen" id="screen-6">
+  <div class="screen-inner">
+    <div class="q-label">05 — Integration Model</div>
+    <div class="q-text">How would you prefer to integrate this into your practice?</div>
+    <p class="q-sub">Select all that apply.</p>
+    <div class="choices" id="q5-choices">
+      <button class="choice-btn" data-value="independent" onclick="toggleChoice(this)"><span class="choice-check"></span>Clients use independently between sessions</button>
+      <button class="choice-btn" data-value="in_session" onclick="toggleChoice(this)"><span class="choice-check"></span>Real-time tool used during our sessions together</button>
+      <button class="choice-btn" data-value="homework" onclick="toggleChoice(this)"><span class="choice-check"></span>Homework — clients use it and report back</button>
+      <button class="choice-btn" data-value="multiple" onclick="toggleChoice(this)"><span class="choice-check"></span>Multiple ways depending on the client</button>
+      <button class="choice-btn" data-value="unsure" onclick="toggleChoice(this)"><span class="choice-check"></span>Not sure yet</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(5)">← Back</button>
+      <button class="btn-next" onclick="goTo(7)">Next <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 7: Q6 — Feature Priority ── -->
+<div class="screen" id="screen-7">
+  <div class="screen-inner">
+    <div class="q-label">06 — Feature Priority</div>
+    <div class="q-text">Which feature matters most for helping your clients?</div>
+    <p class="q-sub">Choose one.</p>
+    <div class="choices" id="q6-choices">
+      <button class="choice-btn" data-value="realtime" onclick="toggleSingle(this,'q6-choices')"><span class="choice-check"></span>Real-time alerts during calls</button>
+      <button class="choice-btn" data-value="coaching" onclick="toggleSingle(this,'q6-choices')"><span class="choice-check"></span>In-the-moment response coaching</button>
+      <button class="choice-btn" data-value="post_call" onclick="toggleSingle(this,'q6-choices')"><span class="choice-check"></span>Post-call summary to review and learn from</button>
+      <button class="choice-btn" data-value="progress" onclick="toggleSingle(this,'q6-choices')"><span class="choice-check"></span>Progress tracking over time</button>
+      <button class="choice-btn" data-value="simplicity" onclick="toggleSingle(this,'q6-choices')"><span class="choice-check"></span>Simplicity — just works, no friction</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(6)">← Back</button>
+      <button class="btn-next" onclick="goTo(8)">Next <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 8: Q7 — Privacy Comfort ── -->
+<div class="screen" id="screen-8">
+  <div class="screen-inner">
+    <div class="q-label">07 — Privacy &amp; Ethics</div>
+    <div class="q-text">How comfortable are you with on-device AI analysis of your clients' video calls?</div>
+    <p class="q-sub">All analysis happens locally on the client's device — no video or audio is uploaded or stored anywhere.</p>
+    <div class="slider-wrap">
+      <div class="slider-labels">
+        <span>Significant concerns</span><span>Hesitant</span><span>Neutral</span><span>Mostly comfortable</span><span>Fully comfortable</span>
+      </div>
+      <div class="slider-track-wrap">
+        <input type="range" min="1" max="5" value="3" id="q7-slider" oninput="updateSlider(this, q7Labels)" />
+      </div>
+      <div class="slider-value-display">
+        <div class="slider-current-label" id="q7-label">Neutral — would want to review with clients first</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(7)">← Back</button>
+      <button class="btn-next" onclick="goTo(9)">Next <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 9: Q8 — Pricing ── -->
+<div class="screen" id="screen-9">
+  <div class="screen-inner">
+    <div class="q-label">08 — Pricing Model</div>
+    <div class="q-text">Which pricing structure makes the most sense for your practice?</div>
+    <p class="q-sub">Market research only — no commitment to any model.</p>
+    <div class="choices" id="q8-choices">
+      <button class="choice-btn" data-value="per_client" onclick="toggleSingle(this,'q8-choices')"><span class="choice-check"></span>Per-client monthly subscription ($10–30/client/month)</button>
+      <button class="choice-btn" data-value="flat_fee" onclick="toggleSingle(this,'q8-choices')"><span class="choice-check"></span>Flat monthly fee ($500–2,000/month, unlimited clients)</button>
+      <button class="choice-btn" data-value="rev_share" onclick="toggleSingle(this,'q8-choices')"><span class="choice-check"></span>Revenue share (you earn a portion of referred client subscriptions)</button>
+      <button class="choice-btn" data-value="tiered" onclick="toggleSingle(this,'q8-choices')"><span class="choice-check"></span>Tiered pricing (individual vs. group use)</button>
+      <button class="choice-btn" data-value="unsure" onclick="toggleSingle(this,'q8-choices')"><span class="choice-check"></span>Not sure</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(8)">← Back</button>
+      <button class="btn-next" onclick="goTo(10)">Next <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 10: Q9 — Pilot Interest ── -->
+<div class="screen" id="screen-10">
+  <div class="screen-inner">
+    <div class="q-label">09 — Pilot Interest</div>
+    <div class="q-text">Would you be interested in being a pilot partner when we launch?</div>
+    <p class="q-sub">Pilot partners get early access, provide direct feedback, and help shape the product. Discounted rates in exchange for a few honest check-ins.</p>
+    <div class="choices" id="q9-choices">
+      <button class="choice-btn" data-value="definitely" onclick="toggleSingle(this,'q9-choices'); showConditional(true)"><span class="choice-check"></span>Definitely interested</button>
+      <button class="choice-btn" data-value="maybe" onclick="toggleSingle(this,'q9-choices'); showConditional(true)"><span class="choice-check"></span>Maybe — tell me more</button>
+      <button class="choice-btn" data-value="prob_not" onclick="toggleSingle(this,'q9-choices'); showConditional(false)"><span class="choice-check"></span>Probably not</button>
+      <button class="choice-btn" data-value="unsure" onclick="toggleSingle(this,'q9-choices'); showConditional(false)"><span class="choice-check"></span>Not sure yet</button>
+    </div>
+    <div class="conditional-field" id="contact-field">
+      <label class="conditional-label">Best way to reach you and timing</label>
+      <input type="text" id="q9-contact" placeholder="Contact preference, best time to connect..." />
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(9)">← Back</button>
+      <button class="btn-next" onclick="goTo(11)">Next <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 11: Q10 — Open Feedback ── -->
+<div class="screen" id="screen-11">
+  <div class="screen-inner">
+    <div class="q-label">10 — Open Feedback</div>
+    <div class="q-text">Anything else you want us to know?</div>
+    <p class="q-sub">Optional. Thoughts, concerns, suggestions — nothing is off-limits.</p>
+    <textarea class="open-textarea" id="q10-open" maxlength="500" placeholder="Your thoughts..."></textarea>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo(10)">← Back</button>
+      <button class="btn-next" onclick="submitSurvey()">Submit <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 12: SUCCESS ── -->
+<div class="screen" id="screen-12">
+  <div class="screen-inner success-screen">
+    <div class="success-icon">✓</div>
+    <div class="success-title">Thank you.<br><em>Your perspective matters.</em></div>
+    <p class="success-body">Your feedback goes directly toward shaping this product. If you indicated interest in a pilot partnership, expect to hear from Seth directly.</p>
+    <a href="https://nerovion.ai" class="back-home">← Back to nerovion.ai</a>
+  </div>
 </div>
 
 <script>
-  // Intercept form submit for smooth UX — no page reload flash
-  const form = document.getElementById('survey-form');
-  const success = document.getElementById('success-screen');
+  const q1Labels = [
+    'Rarely — not a primary issue',
+    'Occasionally, but not a primary issue',
+    'Sometimes — happens with some clients',
+    'Often — a significant challenge for many clients',
+    'Major pain point for most of my clients'
+  ];
+  const q2Labels = [
+    'Minimal — rarely affects outcomes',
+    'Minor — small setbacks they recover from quickly',
+    'Moderate — noticeable setbacks but they recover',
+    'Significant — regularly costs them relationships or opportunities',
+    'Career-defining — one of their biggest ongoing challenges'
+  ];
+  const q3Labels = [
+    'Definitely not — not appropriate for my clients',
+    'Probably not — significant reservations',
+    'Maybe — depends on the specifics',
+    'Probably yes — I can see the value',
+    'Definitely yes — this fills a real gap'
+  ];
+  const q4Labels = [
+    'Not comfortable — feels too prescriptive',
+    'Hesitant — would need to review before recommending',
+    'Neutral — would need to see it in practice',
+    'Comfortable with guidance — good if client has final say',
+    'Fully comfortable — this is a valuable coaching extension'
+  ];
+  const q7Labels = [
+    'Significant concerns — privacy is a barrier',
+    'Hesitant — would want more details',
+    'Neutral — would want to review with clients first',
+    'Mostly comfortable — on-device processing helps',
+    'Fully comfortable — privacy approach works'
+  ];
 
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = form.querySelector('.submit-btn');
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
+  function updateSlider(input, labels) {
+    const val = parseInt(input.value);
+    const pct = ((val - 1) / 4) * 100;
+    input.style.setProperty('--pct', pct + '%');
+    const labelId = input.id.replace('-slider', '-label');
+    const labelEl = document.getElementById(labelId);
+    if (labelEl) labelEl.textContent = labels[val - 1];
+  }
 
-    const data = new FormData(form);
+  document.querySelectorAll('input[type="range"]').forEach(slider => {
+    const pct = ((parseInt(slider.value) - 1) / 4) * 100;
+    slider.style.setProperty('--pct', pct + '%');
+  });
 
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      });
+  function toggleChoice(btn) { btn.classList.toggle('selected'); }
+  function toggleSingle(btn, groupId) {
+    document.getElementById(groupId).querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  function showConditional(show) {
+    document.getElementById('contact-field').classList.toggle('visible', show);
+  }
 
-      if (res.ok) {
-        form.style.display = 'none';
-        success.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        btn.textContent = 'Something went wrong — try again';
-        btn.disabled = false;
-      }
-    } catch(err) {
-      btn.textContent = 'Network error — try again';
-      btn.disabled = false;
+  const TOTAL_SCREENS = 12;
+  let current = 0;
+
+  function goTo(idx) {
+    const prev = document.getElementById('screen-' + current);
+    prev.classList.add('exit-up');
+    setTimeout(() => { prev.classList.remove('active', 'exit-up'); }, 350);
+    setTimeout(() => {
+      const next = document.getElementById('screen-' + idx);
+      next.classList.add('active');
+      current = idx;
+      updateProgress();
+    }, 200);
+  }
+
+  function updateProgress() {
+    const questionScreens = 11;
+    const pct = current <= 0 ? 0 : Math.min(((current) / questionScreens) * 100, 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    if (current === 0) document.getElementById('navStep').textContent = 'Practitioner Survey';
+    else if (current === 12) document.getElementById('navStep').textContent = 'Complete';
+    else document.getElementById('navStep').textContent = current + ' of 10';
+  }
+
+  function submitSurvey() {
+    const data = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      q1: document.getElementById('q1-slider').value,
+      q2: document.getElementById('q2-slider').value,
+      q3: document.getElementById('q3-slider').value,
+      q4: document.getElementById('q4-slider').value,
+      q5: [...document.querySelectorAll('#q5-choices .choice-btn.selected')].map(b => b.dataset.value).join(', '),
+      q6: document.querySelector('#q6-choices .choice-btn.selected')?.dataset.value || '',
+      q7: document.getElementById('q7-slider').value,
+      q8: document.querySelector('#q8-choices .choice-btn.selected')?.dataset.value || '',
+      q9: document.querySelector('#q9-choices .choice-btn.selected')?.dataset.value || '',
+      q9_contact: document.getElementById('q9-contact').value,
+      q10: document.getElementById('q10-open').value
+    };
+    console.log('Survey data:', data);
+    // TODO: POST to GHL webhook
+    goTo(12);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && current > 0 && current < 11) {
+      const activeNext = document.querySelector('#screen-' + current + ' .btn-next');
+      if (activeNext) activeNext.click();
     }
   });
-
-  // Visual checkbox/radio feedback
-  document.querySelectorAll('.opt').forEach(opt => {
-    const input = opt.querySelector('input');
-    if (!input) return;
-    input.addEventListener('change', () => {
-      if (input.type === 'radio') {
-        const siblings = document.querySelectorAll(`input[name="${input.name}"]`);
-        siblings.forEach(s => s.closest('.opt').style.background = '');
-      }
-      if (input.checked) {
-        opt.style.background = '#eef0f5';
-        opt.style.borderColor = '#9a9fc0';
-      }
-    });
-  });
 </script>
-
 </body>
 </html>
