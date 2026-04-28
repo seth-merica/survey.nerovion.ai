@@ -12,7 +12,6 @@
     :root {
       --viola: #A72D91; --viola-light: #C44DB0; --viola-dark: #7A1F6A;
       --orange: #ED7D1B; --orange-light: #F59A45;
-      --accent: #ED7D1B; --accent-light: #F59A45;
       --deep: #130D22; --deep-mid: #1E1430; --deep-surface: #261A3A; --deep-border: #3A2858;
       --text-primary: #F0EAF8; --text-secondary: #B8A8D0; --text-muted: #7A6A94;
       --white: #FFFFFF;
@@ -41,19 +40,64 @@
     .q-text { font-family: var(--font-display); font-size: clamp(1.6rem, 3.5vw, 2.8rem); font-weight: 300; line-height: 1.25; color: var(--white); margin-bottom: 12px; }
     .q-text em { font-style: italic; color: var(--orange-light); }
     .q-sub { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 48px; max-width: 600px; }
+
+    /* SLIDER — IMPROVED HITBOX + CLICKABLE LABELS (orange theme) */
     .slider-wrap { width: 100%; margin-bottom: 40px; }
     .slider-labels { display: flex; justify-content: space-between; margin-bottom: 16px; }
-    .slider-labels span { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; color: var(--text-muted); max-width: 18%; text-align: center; line-height: 1.4; }
+    .slider-labels span {
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em;
+      color: var(--text-muted); max-width: 18%; text-align: center; line-height: 1.4;
+      cursor: pointer; padding: 8px 4px; transition: color 0.2s; user-select: none; flex: 1;
+    }
+    .slider-labels span:hover { color: var(--text-primary); }
+    .slider-labels span.active { color: var(--orange-light); font-weight: 600; }
     .slider-labels span:first-child { text-align: left; }
     .slider-labels span:last-child { text-align: right; }
-    .slider-track-wrap { position: relative; padding: 16px 0; }
-    input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--deep-border); outline: none; cursor: pointer; border-radius: 2px; }
-    input[type="range"]::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: linear-gradient(to right, var(--orange) 0%, var(--orange) var(--pct, 0%), var(--deep-border) var(--pct, 0%)); }
-    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px rgba(237,125,27,0.2); cursor: pointer; margin-top: -13px; transition: box-shadow 0.2s, transform 0.15s; }
-    input[type="range"]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 8px rgba(237,125,27,0.25); transform: scale(1.1); }
-    input[type="range"]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--orange); border: none; cursor: pointer; }
+    .slider-track-wrap {
+      position: relative; padding: 24px 0; cursor: pointer;
+    }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 32px; background: transparent;
+      outline: none; cursor: pointer; margin: 0;
+    }
+    .slider-track-wrap::before {
+      content: ''; position: absolute; left: 0; right: 0; top: 50%;
+      height: 2px; background: var(--deep-border); border-radius: 2px;
+      transform: translateY(-50%); pointer-events: none;
+    }
+    .slider-track-wrap::after {
+      content: ''; position: absolute; left: 0; top: 50%;
+      height: 2px; width: var(--pct, 0%);
+      background: linear-gradient(90deg, var(--orange), var(--orange-light));
+      border-radius: 2px; transform: translateY(-50%); pointer-events: none;
+      transition: width 0.2s ease;
+    }
+    input[type="range"]::-webkit-slider-runnable-track { height: 32px; background: transparent; }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 0 6px rgba(237,125,27,0.18), 0 4px 12px rgba(0,0,0,0.4);
+      cursor: grab; margin-top: 0;
+      transition: box-shadow 0.2s, transform 0.15s;
+      border: 3px solid var(--deep);
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 0 10px rgba(237,125,27,0.25), 0 4px 12px rgba(0,0,0,0.4);
+      transform: scale(1.05);
+    }
+    input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; }
+    input[type="range"]::-moz-range-track { height: 32px; background: transparent; border: none; }
+    input[type="range"]::-moz-range-thumb {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--orange); cursor: grab;
+      border: 3px solid var(--deep);
+      box-shadow: 0 0 0 6px rgba(237,125,27,0.18);
+    }
     .slider-value-display { text-align: center; margin-top: 20px; }
     .slider-current-label { font-family: var(--font-display); font-size: 1.1rem; font-style: italic; color: var(--text-primary); min-height: 1.6rem; transition: opacity 0.2s; }
+
     .choices { display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; }
     .choice-btn { background: var(--deep-surface); border: 1px solid var(--deep-border); padding: 14px 20px; color: var(--text-secondary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; text-align: left; cursor: pointer; transition: border-color 0.2s, background 0.2s, color 0.2s; display: flex; align-items: center; gap: 14px; }
     .choice-btn:hover { border-color: var(--orange); background: rgba(38,26,58,0.8); color: var(--text-primary); }
@@ -61,29 +105,68 @@
     .choice-check { width: 18px; height: 18px; border: 1.5px solid var(--deep-border); border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
     .choice-btn.selected .choice-check { background: var(--orange); border-color: var(--orange); }
     .choice-btn.selected .choice-check::after { content: '✓'; color: var(--white); font-size: 11px; font-weight: 700; }
+
     .field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
     .field-group label { display: block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .field-group label .req { color: var(--orange-light); margin-left: 4px; }
     .field-group input { width: 100%; background: var(--deep-surface); border: 1px solid var(--deep-border); color: var(--text-primary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; padding: 14px 18px; outline: none; transition: border-color 0.2s; }
     .field-group input:focus { border-color: var(--orange); }
     .field-group input::placeholder { color: var(--text-muted); }
+    .field-group input.invalid { border-color: #FF6B8A; }
+
     .open-textarea { width: 100%; background: var(--deep-surface); border: 1px solid var(--deep-border); color: var(--text-primary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; padding: 16px 18px; outline: none; transition: border-color 0.2s; resize: none; min-height: 140px; margin-bottom: 40px; }
     .open-textarea:focus { border-color: var(--orange); }
     .open-textarea::placeholder { color: var(--text-muted); }
+
     .conditional-field { display: none; margin-top: -16px; margin-bottom: 40px; }
     .conditional-field.visible { display: block; }
     .conditional-field input { width: 100%; background: var(--deep-surface); border: 1px solid var(--deep-border); color: var(--text-primary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; padding: 14px 18px; outline: none; transition: border-color 0.2s; }
     .conditional-field input:focus { border-color: var(--orange); }
     .conditional-field input::placeholder { color: var(--text-muted); }
     .conditional-label { display: block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+
+    /* CONTACT GRID — Q9 conditional structured fields (orange theme) */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; margin-bottom: 20px; }
+    .contact-col { display: flex; flex-direction: column; }
+    .contact-select {
+      width: 100%; background: var(--deep-surface); border: 1px solid var(--deep-border);
+      color: var(--text-primary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300;
+      padding: 14px 18px; outline: none; transition: border-color 0.2s;
+      cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%237A6A94' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+    .contact-select:focus { border-color: var(--orange); }
+    .contact-select option { background: var(--deep-mid); color: var(--text-primary); }
+    .contact-time-block { margin-top: 4px; }
+    .time-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .time-btn {
+      background: var(--deep-surface); border: 1px solid var(--deep-border);
+      color: var(--text-secondary); font-family: var(--font-body);
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.04em;
+      padding: 12px 8px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .time-btn:hover { border-color: var(--orange); color: var(--text-primary); background: rgba(38,26,58,0.8); }
+    .time-btn.selected { border-color: var(--orange); background: rgba(237,125,27,0.12); color: var(--text-primary); }
+
     .btn-next { background: var(--orange); color: var(--white); font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 48px; border: none; cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; gap: 12px; }
     .btn-next:hover { background: var(--orange-light); transform: translateY(-2px); }
-    .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+    .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; background: var(--orange); }
+    .btn-next:disabled:hover { background: var(--orange); transform: none; }
     .btn-back { background: transparent; color: var(--text-muted); font-family: var(--font-body); font-size: 0.78rem; font-weight: 400; letter-spacing: 0.08em; border: none; cursor: pointer; padding: 10px 0; transition: color 0.2s; margin-right: 24px; }
     .btn-back:hover { color: var(--text-primary); }
-    .btn-row { display: flex; align-items: center; margin-top: 8px; }
+    .btn-row { display: flex; align-items: center; margin-top: 8px; flex-wrap: wrap; gap: 12px; }
     .arrow { font-size: 18px; transition: transform 0.2s; }
     .btn-next:hover .arrow { transform: translateX(4px); }
-    .submit-error { color: #FF6B8A; font-size: 0.85rem; margin-top: 16px; min-height: 1.2rem; }
+
+    .validation-msg { display: none; color: #FF8FA5; font-size: 0.82rem; margin-top: 16px; padding: 10px 14px; background: rgba(255,107,138,0.08); border-left: 2px solid #FF6B8A; }
+    .validation-msg.visible { display: block; }
+    .submit-error { color: #FF8FA5; font-size: 0.85rem; margin-top: 16px; min-height: 1.2rem; }
+
     .intro-screen .q-text { font-size: clamp(2rem, 4vw, 3.6rem); margin-bottom: 20px; }
     .intro-meta { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
     .intro-meta-item { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
@@ -96,6 +179,7 @@
     .how-callout p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 8px; }
     .how-callout p:last-child { margin-bottom: 0; }
     .how-example { font-family: var(--font-display); font-style: italic; font-size: 0.95rem; color: var(--text-primary); border-left: 1px solid var(--deep-border); padding-left: 12px; margin: 6px 0; }
+
     .success-screen { text-align: center; }
     .success-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(237,125,27,0.1); border: 1px solid var(--orange); display: flex; align-items: center; justify-content: center; margin: 0 auto 32px; font-size: 28px; color: var(--orange-light); }
     .success-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; color: var(--white); margin-bottom: 20px; line-height: 1.2; }
@@ -104,10 +188,14 @@
     .back-home { font-size: 0.8rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.06em; }
     .back-home:hover { color: var(--orange-light); }
     .screen::after { content: ''; position: fixed; top: -150px; right: -150px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(237,125,27,0.08) 0%, transparent 70%); pointer-events: none; z-index: -1; }
+
     @media (max-width: 640px) {
       .top-nav { padding: 16px 24px; }
       .screen { padding: 72px 24px 40px; }
       .field-pair { grid-template-columns: 1fr; }
+      .slider-labels span { font-size: 0.62rem; padding: 6px 2px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .time-buttons { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -119,7 +207,7 @@
   <span class="nav-step" id="navStep">Practitioner Survey</span>
 </nav>
 
-<!-- ── SCREEN 0: INTRO ── -->
+<!-- SCREEN 0 -->
 <div class="screen active" id="screen-0">
   <div class="screen-inner intro-screen">
     <div class="q-label">Practitioner Survey</div>
@@ -142,7 +230,7 @@
   </div>
 </div>
 
-<!-- ── SCREEN 1: NAME + EMAIL ── -->
+<!-- SCREEN 1: NAME + EMAIL -->
 <div class="screen" id="screen-1">
   <div class="screen-inner">
     <div class="q-label">Your Information</div>
@@ -150,30 +238,31 @@
     <p class="q-sub">Your answers go directly to Seth. No spam, no sharing.</p>
     <div class="field-pair">
       <div class="field-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" placeholder="Your name" />
+        <label for="name">Full Name<span class="req">*</span></label>
+        <input type="text" id="name" name="name" placeholder="Your name" required />
       </div>
       <div class="field-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="your@email.com" />
+        <label for="email">Email Address<span class="req">*</span></label>
+        <input type="email" id="email" name="email" placeholder="your@email.com" required />
       </div>
     </div>
     <div class="btn-row">
       <button class="btn-back" onclick="goTo(0)">← Back</button>
-      <button class="btn-next" onclick="goTo(2)">Next <span class="arrow">→</span></button>
+      <button class="btn-next" onclick="validateAndAdvance(1, 2)">Next <span class="arrow">→</span></button>
     </div>
+    <div class="validation-msg" id="validation-1">Please complete all required fields before continuing.</div>
   </div>
 </div>
 
-<!-- ── SCREEN 2: Q1 ── -->
+<!-- SCREEN 2: Q1 -->
 <div class="screen" id="screen-2">
   <div class="screen-inner">
     <div class="q-label">01 — Client Challenges</div>
     <div class="q-text">How often do your neurodivergent clients miss unspoken cues in professional conversations?</div>
     <p class="q-sub">Body language, tone shifts, contradictions between what someone says and how they actually seem.</p>
     <div class="slider-wrap">
-      <div class="slider-labels">
-        <span>Rarely or never</span><span>Occasionally</span><span>Sometimes</span><span>Often</span><span>Major pain point</span>
+      <div class="slider-labels" data-slider="q1-slider">
+        <span data-val="1">Rarely or never</span><span data-val="2">Occasionally</span><span data-val="3">Sometimes</span><span data-val="4">Often</span><span data-val="5">Major pain point</span>
       </div>
       <div class="slider-track-wrap">
         <input type="range" min="1" max="5" value="3" id="q1-slider" oninput="updateSlider(this, q1Labels)" />
@@ -189,15 +278,15 @@
   </div>
 </div>
 
-<!-- ── SCREEN 3: Q2 ── -->
+<!-- SCREEN 3: Q2 -->
 <div class="screen" id="screen-3">
   <div class="screen-inner">
     <div class="q-label">02 — Real-World Consequences</div>
     <div class="q-text">How significant are the consequences when your clients miss these cues?</div>
     <p class="q-sub">Think about missed opportunities, damaged relationships, or professional setbacks.</p>
     <div class="slider-wrap">
-      <div class="slider-labels">
-        <span>Minimal consequences</span><span>Minor</span><span>Moderate</span><span>Significant</span><span>Career-defining</span>
+      <div class="slider-labels" data-slider="q2-slider">
+        <span data-val="1">Minimal consequences</span><span data-val="2">Minor</span><span data-val="3">Moderate</span><span data-val="4">Significant</span><span data-val="5">Career-defining</span>
       </div>
       <div class="slider-track-wrap">
         <input type="range" min="1" max="5" value="3" id="q2-slider" oninput="updateSlider(this, q2Labels)" />
@@ -213,15 +302,15 @@
   </div>
 </div>
 
-<!-- ── SCREEN 4: Q3 ── -->
+<!-- SCREEN 4: Q3 -->
 <div class="screen" id="screen-4">
   <div class="screen-inner">
     <div class="q-label">03 — Product Fit</div>
     <div class="q-text">How likely are you to recommend a real-time cueing tool to your clients?</div>
     <p class="q-sub">A tool that catches unspoken cues during video calls and alerts your clients privately — used independently, outside sessions.</p>
     <div class="slider-wrap">
-      <div class="slider-labels">
-        <span>Definitely not</span><span>Probably not</span><span>Maybe</span><span>Probably yes</span><span>Definitely yes</span>
+      <div class="slider-labels" data-slider="q3-slider">
+        <span data-val="1">Definitely not</span><span data-val="2">Probably not</span><span data-val="3">Maybe</span><span data-val="4">Probably yes</span><span data-val="5">Definitely yes</span>
       </div>
       <div class="slider-track-wrap">
         <input type="range" min="1" max="5" value="3" id="q3-slider" oninput="updateSlider(this, q3Labels)" />
@@ -237,15 +326,15 @@
   </div>
 </div>
 
-<!-- ── SCREEN 5: Q4 ── -->
+<!-- SCREEN 5: Q4 -->
 <div class="screen" id="screen-5">
   <div class="screen-inner">
     <div class="q-label">04 — AI Coaching</div>
     <div class="q-text">How comfortable are you with AI suggesting responses to your clients in the moment?</div>
     <p class="q-sub">Example: The AI detects frustration and suggests — "You might say: 'I want to make sure I understand — is there something I'm missing?'"</p>
     <div class="slider-wrap">
-      <div class="slider-labels">
-        <span>Not comfortable — too prescriptive</span><span>Hesitant</span><span>Neutral</span><span>Comfortable with guidance</span><span>Fully comfortable</span>
+      <div class="slider-labels" data-slider="q4-slider">
+        <span data-val="1">Not comfortable</span><span data-val="2">Hesitant</span><span data-val="3">Neutral</span><span data-val="4">With guidance</span><span data-val="5">Fully comfortable</span>
       </div>
       <div class="slider-track-wrap">
         <input type="range" min="1" max="5" value="3" id="q4-slider" oninput="updateSlider(this, q4Labels)" />
@@ -261,12 +350,12 @@
   </div>
 </div>
 
-<!-- ── SCREEN 6: Q5 ── -->
+<!-- SCREEN 6: Q5 multi-select -->
 <div class="screen" id="screen-6">
   <div class="screen-inner">
     <div class="q-label">05 — Integration Model</div>
     <div class="q-text">How would you prefer to integrate this into your practice?</div>
-    <p class="q-sub">Select all that apply.</p>
+    <p class="q-sub">Select all that apply. <span style="color:var(--orange-light);">Required.</span></p>
     <div class="choices" id="q5-choices">
       <button class="choice-btn" data-value="independent" onclick="toggleChoice(this)"><span class="choice-check"></span>Clients use independently between sessions</button>
       <button class="choice-btn" data-value="in_session" onclick="toggleChoice(this)"><span class="choice-check"></span>Real-time tool used during our sessions together</button>
@@ -276,17 +365,18 @@
     </div>
     <div class="btn-row">
       <button class="btn-back" onclick="goTo(5)">← Back</button>
-      <button class="btn-next" onclick="goTo(7)">Next <span class="arrow">→</span></button>
+      <button class="btn-next" onclick="validateAndAdvance(6, 7)">Next <span class="arrow">→</span></button>
     </div>
+    <div class="validation-msg" id="validation-6">Please select at least one option to continue.</div>
   </div>
 </div>
 
-<!-- ── SCREEN 7: Q6 ── -->
+<!-- SCREEN 7: Q6 single -->
 <div class="screen" id="screen-7">
   <div class="screen-inner">
     <div class="q-label">06 — Feature Priority</div>
     <div class="q-text">Which feature matters most for helping your clients?</div>
-    <p class="q-sub">Choose one.</p>
+    <p class="q-sub">Choose one. <span style="color:var(--orange-light);">Required.</span></p>
     <div class="choices" id="q6-choices">
       <button class="choice-btn" data-value="realtime" onclick="toggleSingle(this,'q6-choices')"><span class="choice-check"></span>Real-time alerts during calls</button>
       <button class="choice-btn" data-value="coaching" onclick="toggleSingle(this,'q6-choices')"><span class="choice-check"></span>In-the-moment response coaching</button>
@@ -296,20 +386,21 @@
     </div>
     <div class="btn-row">
       <button class="btn-back" onclick="goTo(6)">← Back</button>
-      <button class="btn-next" onclick="goTo(8)">Next <span class="arrow">→</span></button>
+      <button class="btn-next" onclick="validateAndAdvance(7, 8)">Next <span class="arrow">→</span></button>
     </div>
+    <div class="validation-msg" id="validation-7">Please select an option to continue.</div>
   </div>
 </div>
 
-<!-- ── SCREEN 8: Q7 ── -->
+<!-- SCREEN 8: Q7 -->
 <div class="screen" id="screen-8">
   <div class="screen-inner">
     <div class="q-label">07 — Privacy &amp; Ethics</div>
     <div class="q-text">How comfortable are you with on-device AI analysis of your clients' video calls?</div>
     <p class="q-sub">All analysis happens locally on the client's device — no video or audio is uploaded or stored anywhere.</p>
     <div class="slider-wrap">
-      <div class="slider-labels">
-        <span>Significant concerns</span><span>Hesitant</span><span>Neutral</span><span>Mostly comfortable</span><span>Fully comfortable</span>
+      <div class="slider-labels" data-slider="q7-slider">
+        <span data-val="1">Significant concerns</span><span data-val="2">Hesitant</span><span data-val="3">Neutral</span><span data-val="4">Mostly comfortable</span><span data-val="5">Fully comfortable</span>
       </div>
       <div class="slider-track-wrap">
         <input type="range" min="1" max="5" value="3" id="q7-slider" oninput="updateSlider(this, q7Labels)" />
@@ -325,12 +416,12 @@
   </div>
 </div>
 
-<!-- ── SCREEN 9: Q8 ── -->
+<!-- SCREEN 9: Q8 -->
 <div class="screen" id="screen-9">
   <div class="screen-inner">
     <div class="q-label">08 — Pricing Model</div>
     <div class="q-text">Which pricing structure makes the most sense for your practice?</div>
-    <p class="q-sub">Market research only — no commitment to any model.</p>
+    <p class="q-sub">Market research only — no commitment to any model. <span style="color:var(--orange-light);">Required.</span></p>
     <div class="choices" id="q8-choices">
       <button class="choice-btn" data-value="per_client" onclick="toggleSingle(this,'q8-choices')"><span class="choice-check"></span>Per-client monthly subscription ($10–30/client/month)</button>
       <button class="choice-btn" data-value="flat_fee" onclick="toggleSingle(this,'q8-choices')"><span class="choice-check"></span>Flat monthly fee ($500–2,000/month, unlimited clients)</button>
@@ -340,17 +431,18 @@
     </div>
     <div class="btn-row">
       <button class="btn-back" onclick="goTo(8)">← Back</button>
-      <button class="btn-next" onclick="goTo(10)">Next <span class="arrow">→</span></button>
+      <button class="btn-next" onclick="validateAndAdvance(9, 10)">Next <span class="arrow">→</span></button>
     </div>
+    <div class="validation-msg" id="validation-9">Please select an option to continue.</div>
   </div>
 </div>
 
-<!-- ── SCREEN 10: Q9 ── -->
+<!-- SCREEN 10: Q9 -->
 <div class="screen" id="screen-10">
   <div class="screen-inner">
     <div class="q-label">09 — Pilot Interest</div>
     <div class="q-text">Would you be interested in being a pilot partner when we launch?</div>
-    <p class="q-sub">Pilot partners get early access, provide direct feedback, and help shape the product. Discounted rates in exchange for a few honest check-ins.</p>
+    <p class="q-sub">Pilot partners get early access, provide direct feedback, and help shape the product. <span style="color:var(--orange-light);">Required.</span></p>
     <div class="choices" id="q9-choices">
       <button class="choice-btn" data-value="definitely" onclick="toggleSingle(this,'q9-choices'); showConditional(true)"><span class="choice-check"></span>Definitely interested</button>
       <button class="choice-btn" data-value="maybe" onclick="toggleSingle(this,'q9-choices'); showConditional(true)"><span class="choice-check"></span>Maybe — tell me more</button>
@@ -358,17 +450,41 @@
       <button class="choice-btn" data-value="unsure" onclick="toggleSingle(this,'q9-choices'); showConditional(false)"><span class="choice-check"></span>Not sure yet</button>
     </div>
     <div class="conditional-field" id="contact-field">
-      <label class="conditional-label">Best way to reach you and timing</label>
-      <input type="text" id="q9-contact" placeholder="Contact preference, best time to connect..." />
+      <div class="contact-grid">
+        <div class="contact-col">
+          <label class="conditional-label">Preferred Contact Method</label>
+          <select id="q9-method" class="contact-select" onchange="updateContactPlaceholder()">
+            <option value="">Select one...</option>
+            <option value="email">Email</option>
+            <option value="phone">Phone</option>
+            <option value="text">Text message</option>
+            <option value="either">Either is fine</option>
+          </select>
+        </div>
+        <div class="contact-col">
+          <label class="conditional-label">Contact Details</label>
+          <input type="text" id="q9-contact" placeholder="Select method first..." />
+        </div>
+      </div>
+      <div class="contact-time-block">
+        <label class="conditional-label">Best Time to Reach You</label>
+        <div class="time-buttons" id="q9-time">
+          <button type="button" class="time-btn" data-value="morning" onclick="toggleTime(this)">Morning</button>
+          <button type="button" class="time-btn" data-value="afternoon" onclick="toggleTime(this)">Afternoon</button>
+          <button type="button" class="time-btn" data-value="evening" onclick="toggleTime(this)">Evening</button>
+          <button type="button" class="time-btn" data-value="anytime" onclick="toggleTime(this)">Anytime</button>
+        </div>
+      </div>
     </div>
     <div class="btn-row">
       <button class="btn-back" onclick="goTo(9)">← Back</button>
-      <button class="btn-next" onclick="goTo(11)">Next <span class="arrow">→</span></button>
+      <button class="btn-next" onclick="validateAndAdvance(10, 11)">Next <span class="arrow">→</span></button>
     </div>
+    <div class="validation-msg" id="validation-10">Please select an option to continue.</div>
   </div>
 </div>
 
-<!-- ── SCREEN 11: Q10 ── -->
+<!-- SCREEN 11: Q10 OPTIONAL -->
 <div class="screen" id="screen-11">
   <div class="screen-inner">
     <div class="q-label">10 — Open Feedback</div>
@@ -383,7 +499,7 @@
   </div>
 </div>
 
-<!-- ── SCREEN 12: SUCCESS ── -->
+<!-- SCREEN 12: SUCCESS -->
 <div class="screen" id="screen-12">
   <div class="screen-inner success-screen">
     <div class="success-icon">✓</div>
@@ -394,14 +510,13 @@
 </div>
 
 <script>
-  // ── FORMSPREE ENDPOINT ──
   const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mwvryjjk';
 
   const SLIDER_TEXT_LABELS = {
     q1: ['Rarely or never','Occasionally','Sometimes','Often','Major pain point'],
     q2: ['Minimal consequences','Minor','Moderate','Significant','Career-defining'],
     q3: ['Definitely not','Probably not','Maybe','Probably yes','Definitely yes'],
-    q4: ['Not comfortable','Hesitant','Neutral','Comfortable with guidance','Fully comfortable'],
+    q4: ['Not comfortable','Hesitant','Neutral','With guidance','Fully comfortable'],
     q7: ['Significant concerns','Hesitant','Neutral','Mostly comfortable','Fully comfortable']
   };
   const CHOICE_TEXT_LABELS = {
@@ -420,14 +535,44 @@
   function updateSlider(input, labels) {
     const val = parseInt(input.value);
     const pct = ((val - 1) / 4) * 100;
-    input.style.setProperty('--pct', pct + '%');
+    const wrap = input.closest('.slider-track-wrap');
+    if (wrap) wrap.style.setProperty('--pct', pct + '%');
     const labelId = input.id.replace('-slider', '-label');
     const labelEl = document.getElementById(labelId);
     if (labelEl) labelEl.textContent = labels[val - 1];
+    const labelGroup = document.querySelector('.slider-labels[data-slider="' + input.id + '"]');
+    if (labelGroup) {
+      labelGroup.querySelectorAll('span').forEach(s => {
+        s.classList.toggle('active', parseInt(s.dataset.val) === val);
+      });
+    }
   }
+
   document.querySelectorAll('input[type="range"]').forEach(slider => {
     const pct = ((parseInt(slider.value) - 1) / 4) * 100;
-    slider.style.setProperty('--pct', pct + '%');
+    const wrap = slider.closest('.slider-track-wrap');
+    if (wrap) wrap.style.setProperty('--pct', pct + '%');
+    const labelGroup = document.querySelector('.slider-labels[data-slider="' + slider.id + '"]');
+    if (labelGroup) {
+      const v = parseInt(slider.value);
+      labelGroup.querySelectorAll('span').forEach(s => {
+        s.classList.toggle('active', parseInt(s.dataset.val) === v);
+      });
+    }
+  });
+
+  // Click on label segments to set slider value
+  document.querySelectorAll('.slider-labels').forEach(group => {
+    group.querySelectorAll('span').forEach(span => {
+      span.addEventListener('click', () => {
+        const sliderId = group.dataset.slider;
+        const slider = document.getElementById(sliderId);
+        if (!slider) return;
+        slider.value = span.dataset.val;
+        const labelsMap = { 'q1-slider': q1Labels, 'q2-slider': q2Labels, 'q3-slider': q3Labels, 'q4-slider': q4Labels, 'q7-slider': q7Labels };
+        updateSlider(slider, labelsMap[sliderId] || []);
+      });
+    });
   });
 
   function toggleChoice(btn) { btn.classList.toggle('selected'); }
@@ -435,8 +580,53 @@
     document.getElementById(groupId).querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
   }
-  function showConditional(show) {
-    document.getElementById('contact-field').classList.toggle('visible', show);
+  function showConditional(show) { document.getElementById('contact-field').classList.toggle('visible', show); }
+
+  // Update contact details placeholder based on method selection
+  function updateContactPlaceholder() {
+    const method = document.getElementById('q9-method').value;
+    const input = document.getElementById('q9-contact');
+    const placeholders = {
+      email: 'your@email.com',
+      phone: '(555) 555-5555',
+      text: '(555) 555-5555',
+      either: 'Email or phone number'
+    };
+    input.placeholder = placeholders[method] || 'Select method first...';
+  }
+
+  // Toggle time button selection (single select)
+  function toggleTime(btn) {
+    document.querySelectorAll('#q9-time .time-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function validateScreen(screenIdx) {
+    if (screenIdx === 1) {
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const nameOk = name.value.trim().length > 0;
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+      name.classList.toggle('invalid', !nameOk);
+      email.classList.toggle('invalid', !emailOk);
+      return nameOk && emailOk;
+    }
+    if (screenIdx === 6) return document.querySelectorAll('#q5-choices .choice-btn.selected').length > 0;
+    if (screenIdx === 7) return !!document.querySelector('#q6-choices .choice-btn.selected');
+    if (screenIdx === 9) return !!document.querySelector('#q8-choices .choice-btn.selected');
+    if (screenIdx === 10) return !!document.querySelector('#q9-choices .choice-btn.selected');
+    return true;
+  }
+
+  function validateAndAdvance(fromIdx, toIdx) {
+    if (validateScreen(fromIdx)) {
+      const v = document.getElementById('validation-' + fromIdx);
+      if (v) v.classList.remove('visible');
+      goTo(toIdx);
+    } else {
+      const v = document.getElementById('validation-' + fromIdx);
+      if (v) v.classList.add('visible');
+    }
   }
 
   let current = 0;
@@ -451,6 +641,7 @@
       updateProgress();
     }, 200);
   }
+
   function updateProgress() {
     const questionScreens = 11;
     const pct = current <= 0 ? 0 : Math.min(((current) / questionScreens) * 100, 100);
@@ -460,7 +651,6 @@
     else document.getElementById('navStep').textContent = current + ' of 10';
   }
 
-  // ── SUBMIT TO FORMSPREE ──
   async function submitSurvey() {
     const submitBtn = document.getElementById('submit-btn');
     const errorEl = document.getElementById('submit-error');
@@ -481,6 +671,15 @@
     const q8Code = document.querySelector('#q8-choices .choice-btn.selected')?.dataset.value || '';
     const q9Code = document.querySelector('#q9-choices .choice-btn.selected')?.dataset.value || '';
 
+    // Q9 structured contact (only if user opted in)
+    const contactMethodLabels = { email: 'Email', phone: 'Phone', text: 'Text message', either: 'Either email or phone' };
+    const timeLabels = { morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening', anytime: 'Anytime' };
+    const q9Method = document.getElementById('q9-method').value;
+    const q9MethodLabel = contactMethodLabels[q9Method] || '';
+    const q9ContactDetails = document.getElementById('q9-contact').value.trim();
+    const q9TimeCode = document.querySelector('#q9-time .time-btn.selected')?.dataset.value || '';
+    const q9TimeLabel = timeLabels[q9TimeCode] || '';
+
     const payload = {
       _subject: 'New Nerovion B2B Survey Submission',
       'Survey Type': 'B2B — Practitioner / Therapist / Coach',
@@ -495,7 +694,9 @@
       'Q7 — Privacy comfort': `${q7Val}/5 — ${SLIDER_TEXT_LABELS.q7[q7Val-1]}`,
       'Q8 — Preferred pricing model': CHOICE_TEXT_LABELS.q8[q8Code] || '(none selected)',
       'Q9 — Pilot interest': CHOICE_TEXT_LABELS.q9[q9Code] || '(none selected)',
-      'Q9 — Contact preference': document.getElementById('q9-contact').value || '(not provided)',
+      'Q9 — Preferred contact method': q9MethodLabel || '(not provided)',
+      'Q9 — Contact details': q9ContactDetails || '(not provided)',
+      'Q9 — Best time to reach': q9TimeLabel || '(not provided)',
       'Q10 — Open feedback': document.getElementById('q10-open').value || '(not provided)'
     };
 
