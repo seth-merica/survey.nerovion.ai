@@ -511,6 +511,7 @@
 
 <script>
   const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mwvryjjk';
+  const GHL_ENDPOINT = 'https://services.leadconnectorhq.com/hooks/ho15aacOeuwrcbwmNXSX/webhook-trigger/a7f576b7-d1d5-4064-a35e-b9605b2d0c72';
 
   const SLIDER_TEXT_LABELS = {
     q1: ['Rarely or never','Occasionally','Sometimes','Often','Major pain point'],
@@ -699,6 +700,35 @@
       'Q9 — Best time to reach': q9TimeLabel || '(not provided)',
       'Q10 — Open feedback': document.getElementById('q10-open').value || '(not provided)'
     };
+
+    // Build flat GHL payload — every field as a top-level key for easy variable mapping in the workflow
+    const ghlPayload = {
+      email: document.getElementById('email').value || '',
+      name: document.getElementById('name').value || '',
+      form_type: 'survey_b2b',
+      source: 'Survey — B2B — Practitioner',
+      survey_type: 'B2B — Practitioner / Therapist / Coach',
+      q1: `${q1Val}/5 — ${SLIDER_TEXT_LABELS.q1[q1Val-1]}`,
+      q2: `${q2Val}/5 — ${SLIDER_TEXT_LABELS.q2[q2Val-1]}`,
+      q3: `${q3Val}/5 — ${SLIDER_TEXT_LABELS.q3[q3Val-1]}`,
+      q4: `${q4Val}/5 — ${SLIDER_TEXT_LABELS.q4[q4Val-1]}`,
+      q5: q5Readable || '(none selected)',
+      q6: CHOICE_TEXT_LABELS.q6[q6Code] || '(none selected)',
+      q7: `${q7Val}/5 — ${SLIDER_TEXT_LABELS.q7[q7Val-1]}`,
+      q8: CHOICE_TEXT_LABELS.q8[q8Code] || '(none selected)',
+      q9_interest: CHOICE_TEXT_LABELS.q9[q9Code] || '(none selected)',
+      q9_contact_method: q9MethodLabel || '(not provided)',
+      q9_contact_details: q9ContactDetails || '(not provided)',
+      q9_best_time: q9TimeLabel || '(not provided)',
+      q10: document.getElementById('q10-open').value || '(not provided)'
+    };
+
+    // Fire GHL POST in parallel — don't block on it. Formspree remains primary for now.
+    fetch(GHL_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(ghlPayload)
+    }).catch(err => console.warn('GHL webhook failed (non-blocking):', err));
 
     try {
       const response = await fetch(FORMSPREE_ENDPOINT, {
