@@ -197,6 +197,8 @@
     .back-home:hover { color: var(--orange-light); }
     .screen::after { content: ''; position: fixed; top: -150px; right: -150px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(237,125,27,0.08) 0%, transparent 70%); pointer-events: none; z-index: -1; }
 
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
     @media (max-width: 640px) {
       .top-nav { padding: 16px 24px; }
       .screen { padding: 72px 24px 40px; }
