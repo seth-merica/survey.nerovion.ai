@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nerovion — Practitioner Survey</title>
-  <link rel="icon" type="image/png" href="../../logo-mark.png" />
-  <link rel="apple-touch-icon" href="../../logo-mark.png" />
+  <link rel="icon" type="image/png" href="https://nerovion.ai/logo-mark.png" />
+  <link rel="apple-touch-icon" href="https://nerovion.ai/logo-mark.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
@@ -30,7 +30,8 @@
     .progress-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--deep-border); z-index: 100; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--viola)); transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1); width: 0%; }
     .top-nav { position: fixed; top: 3px; left: 0; right: 0; padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; z-index: 90; background: rgba(19,13,34,0.7); backdrop-filter: blur(12px); }
-    .nav-logo { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; letter-spacing: 0.04em; color: var(--white); text-decoration: none; }
+    .nav-logo { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; letter-spacing: 0.04em; color: var(--white); text-decoration: none; display: inline-flex; align-items: center; }
+    .nav-logo img { height: 32px; width: auto; display: block; margin-right: 9px; }
     .nav-logo span { color: var(--viola-light); }
     .nav-step { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
     .screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; padding: 80px 48px 48px; opacity: 0; pointer-events: none; transform: translateY(40px); transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -210,14 +211,14 @@
 
 <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 <nav class="top-nav">
-  <a href="https://nerovion.ai" class="nav-logo">Nero<span>vion</span></a>
+  <a href="https://nerovion.ai" class="nav-logo"><img src="https://nerovion.ai/logo-mark.png" alt="Nerovion" />Nero<span>vion</span></a>
   <span class="nav-step" id="navStep">Practitioner Survey</span>
 </nav>
 
 <!-- SCREEN 0 -->
 <div class="screen active" id="screen-0">
   <div class="screen-inner intro-screen">
-    <img src="../../logo-mark.png" alt="Nerovion" class="intro-lockup" />
+    <img src="https://nerovion.ai/logo-mark.png" alt="Nerovion" class="intro-lockup" />
     <div class="q-label">Practitioner Survey</div>
     <div class="q-text">The tool your clients<br>need you to <em>know about.</em></div>
     <div class="intro-meta">
