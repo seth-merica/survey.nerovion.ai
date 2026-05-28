@@ -116,6 +116,8 @@
     .field-group input:focus { border-color: var(--orange); }
     .field-group input::placeholder { color: var(--text-muted); }
     .field-group input.invalid { border-color: #FF6B8A; }
+    .conditional-field input.invalid { border-color: #FF6B8A; }
+    .contact-select.invalid { border-color: #FF6B8A; }
 
     .open-textarea { width: 100%; background: var(--deep-surface); border: 1px solid var(--deep-border); color: var(--text-primary); font-family: var(--font-body); font-size: 0.9rem; font-weight: 300; padding: 16px 18px; outline: none; transition: border-color 0.2s; resize: none; min-height: 140px; margin-bottom: 40px; }
     .open-textarea:focus { border-color: var(--orange); }
@@ -408,7 +410,7 @@
   <div class="screen-inner">
     <div class="q-label">07 — Privacy &amp; Ethics</div>
     <div class="q-text">How comfortable are you with on-device AI analysis of your clients' video calls?</div>
-    <p class="q-sub">All analysis happens locally on the client's device — no video or audio is uploaded or stored anywhere.</p>
+    <p class="q-sub">Raw video and audio never leave your client's device. On-device processing extracts only structured signals (emotion labels, tone tags, brief context), which are sent to our AI reasoning layer (Anthropic Claude) to generate coaching. Anthropic does not train on this data and deletes API logs after 7 days. We're asking about your comfort level with this architecture.</p>
     <div class="slider-wrap">
       <div class="slider-labels" data-slider="q7-slider">
         <span data-val="1">Significant concerns</span><span data-val="2">Hesitant</span><span data-val="3">Neutral</span><span data-val="4">Mostly comfortable</span><span data-val="5">Fully comfortable</span>
@@ -626,7 +628,59 @@
     if (screenIdx === 6) return document.querySelectorAll('#q5-choices .choice-btn.selected').length > 0;
     if (screenIdx === 7) return !!document.querySelector('#q6-choices .choice-btn.selected');
     if (screenIdx === 9) return !!document.querySelector('#q8-choices .choice-btn.selected');
-    if (screenIdx === 10) return !!document.querySelector('#q9-choices .choice-btn.selected');
+    if (screenIdx === 10) {
+      const interest = document.querySelector('#q9-choices .choice-btn.selected');
+      if (!interest) return false;
+
+      // If the user said yes/probably/maybe, the conditional contact field is shown.
+      // Validate method + format-correct contact details.
+      const value = interest.getAttribute('data-value');
+      const requiresContact = (value === 'definitely' || value === 'probably' || value === 'maybe');
+      if (!requiresContact) return true;
+
+      const methodSelect = document.getElementById('q9-method');
+      const contactInput = document.getElementById('q9-contact');
+      const method = methodSelect.value;
+      const contact = contactInput.value.trim();
+
+      methodSelect.classList.remove('invalid');
+      contactInput.classList.remove('invalid');
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      // Phone: at least 10 digits after stripping common formatting characters
+      const phoneDigits = contact.replace(/[^\d]/g, '');
+      const phoneOk = phoneDigits.length >= 10 && phoneDigits.length <= 15;
+      const emailOk = emailRegex.test(contact);
+
+      const msg = document.getElementById('validation-10');
+
+      if (!method) {
+        methodSelect.classList.add('invalid');
+        if (msg) msg.textContent = 'Please select a contact method.';
+        return false;
+      }
+      if (!contact) {
+        contactInput.classList.add('invalid');
+        if (msg) msg.textContent = 'Please enter your contact details.';
+        return false;
+      }
+      let valid = false;
+      if (method === 'email') valid = emailOk;
+      else if (method === 'phone' || method === 'text') valid = phoneOk;
+      else if (method === 'either') valid = emailOk || phoneOk;
+
+      if (!valid) {
+        contactInput.classList.add('invalid');
+        if (msg) {
+          if (method === 'email') msg.textContent = 'Please enter a valid email address.';
+          else if (method === 'phone' || method === 'text') msg.textContent = 'Please enter a valid phone number (at least 10 digits).';
+          else msg.textContent = 'Please enter a valid email address or phone number.';
+        }
+        return false;
+      }
+      if (msg) msg.textContent = 'Please select an option to continue.';
+      return true;
+    }
     return true;
   }
 
